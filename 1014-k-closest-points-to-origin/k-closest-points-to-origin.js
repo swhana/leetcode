@@ -3,8 +3,18 @@
  * @param {number} k
  * @return {number[][]}
  */
-var kClosest = function(points, k) {
-    points.sort((a, b) => (a[0]*a[0] + a[1]*a[1]) - (b[0]*b[0] + b[1]*b[1]));
+var kClosest = function (points, k) {
+    var heap = new MaxPriorityQueue({ priority: (val) => val[0] });
 
-    return points.slice(0, k);
+    for (let i of points) {
+        var distance = i[0] * i[0] + i[1] * i[1];
+        heap.enqueue([distance, i]);
+        if (heap.size() > k) heap.dequeue();
+    }
+
+    var result = [];
+    while (heap.size() > 0) {
+        result.push(heap.dequeue().element[1]);
+    }
+    return result;
 };
