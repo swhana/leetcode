@@ -12,14 +12,14 @@ var canFinish = function (numCourses, prerequisites) {
     const inDegree = Array.from({ length: numCourses }).fill(0);
     const graph = new Map();
     const queue = [];
-    const order = [];
+    const order = []; //위상정렬한 배열
 
     for (let [e, v] of prerequisites) {
-        if (graph.has(v)) {
-            graph.get(v).push(e);
-        } else graph.set(v, [e]);
+        if (graph.has(e)) {
+            graph.get(e).push(v);
+        } else graph.set(e, [v]);
 
-        inDegree[e]++;
+        inDegree[v]++;
     }
 
     for (let i=0; i<inDegree.length; i++) {
@@ -35,10 +35,12 @@ var canFinish = function (numCourses, prerequisites) {
             }
         }
 
-        order.push(v);
+        order.push(v); //위상정렬된 배열
     }
 
-    return order.length === numCourses;
+    //위상정렬은 사이클이 없는 그래프에 의해 성립하므로
+    //위상정렬된 배열과 원본배열의 길이가 차이가 있다면 그래프 내에 사이클이 있다는 뜻이 된다
+    return order.length === numCourses; 
 };
 
 
