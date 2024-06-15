@@ -27,7 +27,7 @@ var canFinish = function (numCourses, prerequisites) {
     }
 
     while (queue.length) {
-        const v = queue.shift();
+        const v = queue.pop();
         if (graph.has(v)) {
             for (let e of graph.get(v)) {
                 inDegree[e]--; //방문한 정점에 한해 inDegree값 감소
