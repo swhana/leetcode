@@ -3,47 +3,42 @@
  * @param {number[][]} prerequisites
  * @return {boolean}
  */
+
+//위상정렬 방식으로 풀어보기
+//정점에 들어오는 간선수 inDegree 배열을 생성
+//inDegree값이 0인 정점 먼저 queue에 넣어서 bfs 진행
+//인접한 정점에 대해 inDegree값을 감소시키고 0이 되는 정점이 있을 경우 queue에 삽입
 var canFinish = function (numCourses, prerequisites) {
-    let visited = Array.from({ length: numCourses.length }, () => false);
-    let adjList = Array.from({ length: numCourses.length });
+    const inDegree = Array.from({ length: numCourses }).fill(0);
+    const graph = new Map();
+    const queue = [];
+    const order = [];
 
-    for (let i = 0; i < prerequisites.length; i++) {
-        const st = prerequisites[i][0];
-        const ed = prerequisites[i][1];
+    for (let [e, v] of prerequisites) {
+        if (graph.has(v)) {
+            graph.get(v).push(e);
+        } else graph.set(v, [e]);
 
-        if (adjList[st] === undefined) adjList[st] = [ed];
-        else adjList[st].push(ed);
+        inDegree[e]++;
     }
 
-    function dfs(course) {
-        //한번 들었던 코스를 다시 듣는 것이므로 사이클이 만들어짐
-        if (visited[course]) return false;
+    for (let i=0; i<inDegree.length; i++) {
+        if (inDegree[i] === 0) queue.push(i);
+    }
 
-        if (adjList[course] !== undefined) {
-            //더이상 인접한 노드가 없으므로 사이클이 만들어지지않음
-            if (adjList[course].length == 0) {
-                return true;
+    while (queue.length) {
+        const v = queue.shift();
+        if (graph.has(v)) {
+            for (let e of graph.get(v)) {
+                inDegree[e]--; //방문한 정점에 한해 inDegree값 감소
+                if (inDegree[e] === 0) queue.push(e);
             }
-
-            visited[course] = true;
-            //인접한 코스를 대상으로 dfs 진행
-            //해당 코스에서 사이클이 발견되면 false
-            for (let adj of adjList[course]) {
-                if (!dfs(adj)) return false;
-            }
-            visited[course] = false;
-
-            //시간초과 해결
-            adjList[course] = [];
         }
-        return true;
+
+        order.push(v);
     }
 
-    for (let i in adjList) {
-        if (!dfs(i)) return false;
-    }
-
-    return true;
+    return order.length === numCourses;
 };
 
 
