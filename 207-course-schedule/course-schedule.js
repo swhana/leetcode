@@ -30,7 +30,9 @@ var canFinish = function (numCourses, prerequisites) {
         const v = queue.shift();
         if (graph.has(v)) {
             for (let e of graph.get(v)) {
-                inDegree[e]--; //방문한 정점에 한해 inDegree값 감소
+                //방문한 정점에 한해 inDegree값 감소
+                //이 말은 곧 방문한 정점 e에 들어가는 간선을 지운다는 뜻과 같다
+                inDegree[e]--; 
                 if (inDegree[e] === 0) queue.push(e);
             }
         }
